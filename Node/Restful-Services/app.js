@@ -14,5 +14,5 @@ app.get('/404',(req,res)=>{res.status(404).send("<h1>No Route Found</h1>")})
 // app.post();
 // app.put();
 // app.delete();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 app.listen(port,()=>{console.log(`Listening on port ${port} .....`)});
