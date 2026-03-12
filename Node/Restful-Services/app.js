@@ -30,7 +30,7 @@ app.get('/api/courses/:id',(req,res)=>{
 app.put('/api/courses/:id',(req,res)=>{
 
     let course =  courses.find(course=> course.id === parseInt(req.params.id));
-   if(!course) res.status(404).send("No Data found");
+   if(!course) return res.status(404).send("No Data found");
     const {error} = validateSchema(req);
      if(error){
         res.status(400).send(error.message);
@@ -61,9 +61,18 @@ app.post('/api/courses',(req,res)=>{
 })
 
 app.get('/404',(req,res)=>{res.status(404).send("<h1>No Route Found</h1>")})
-// app.post();
-// app.put();
-// app.delete();
+
+app.delete('/api/courses/:id',(req,res)=>{
+    let course = courses.find(course => course.id === parseInt(req.params.id))
+    if(!course){
+        res.status(400).send("No record found");
+        return;
+    }
+    let index = courses.indexOf(course);
+    courses.splice(index,1);
+    res.send(course)
+})
+
 const port = process.env.PORT || 3001;
 app.listen(port,()=>{console.log(`Listening on port ${port} .....`)});
 
