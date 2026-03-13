@@ -1,9 +1,19 @@
 const express = require('express');
 const Joi = require('joi');
-
+const logger = require('./middleware')
+const Auth = require('./AuthMid');
 const app = express();
+const morgan = require('morgan');
+
+// app.set('etag', false);   //desable etag and catching
 
 app.use(express.json());
+// app.use(express.urlencoded());
+app.use(express.static('public'));
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
+app.use(morgan('tiny'));
+app.use(Auth);
+app.use(logger);
 
 let courses = [
     {id:1,name:"JAVA"},
@@ -14,7 +24,7 @@ let courses = [
 ]
 
 app.get('/',(req,res)=>{
-    res.send("Hellow World")
+    res.status(200).send("Hellow World")
 });
 
 app.get('/api/courses',(req,res)=>{res.send(courses)})
