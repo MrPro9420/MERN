@@ -1,0 +1,9 @@
+{
+    "name" : "My Express APP-Development Config",
+    "mail" : {
+        "host" : "dev - mail - server"
+    },
+    "db" : {
+        "host" : "Mongo DB"
+    }
+}

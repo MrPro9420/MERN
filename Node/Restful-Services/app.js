@@ -1,3 +1,6 @@
+const config = require('config');
+const debug = require('debug')('app:startup');
+const dbDebug = require('debug')('app:db');
 const express = require('express');
 const Joi = require('joi');
 const logger = require('./middleware')
@@ -5,15 +8,36 @@ const Auth = require('./AuthMid');
 const app = express();
 const morgan = require('morgan');
 
-// app.set('etag', false);   //desable etag and catching
+app.set('view engine','pug'); //other view engines {EJS , Mustach ,Pug}
+app.set('views','./views')
 
+// app.set('etag', false);   //desable etag and catching
+// process.env.NODE_ENV     //returns application environment
 app.use(express.json());
-// app.use(express.urlencoded());
+// app.use(express.urlencoded()); //used for getting form data in body
 app.use(express.static('public'));
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
-app.use(morgan('tiny'));
 app.use(Auth);
 app.use(logger);
+
+dbDebug(app.get('env')); //set DEBUG ENV to that debug name space
+// console.log(process.env.NODE_ENV)
+
+
+// console.log(`Application Name : ${config.get('name') }`);
+// console.log(`Application Mail server Name : ${config.get('mail.host') }`);
+// console.log(`Application Mail server Pass : ${config.get('mail.password')}`);
+// console.log(`Application DB server Name : ${config.get('db.host')}`);
+// console.log(`Application DB server Pass : ${config.get('db.password')}`);
+
+
+
+// To SetAPP ENV TO PRODUCTION RUN CMD {Set NODE_ENV=production}
+
+if(app.get('env') === "development"){
+debug("Morgan Enabled");
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
+app.use(morgan('tiny'));
+}
 
 let courses = [
     {id:1,name:"JAVA"},
@@ -24,7 +48,8 @@ let courses = [
 ]
 
 app.get('/',(req,res)=>{
-    res.status(200).send("Hellow World")
+    // res.status(200).send("Hellow World")
+    res.render('index',{title:"My express App", message:"Hello Welcome"});
 });
 
 app.get('/api/courses',(req,res)=>{res.send(courses)})
