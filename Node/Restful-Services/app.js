@@ -3,8 +3,8 @@ const debug = require('debug')('app:startup');
 const dbDebug = require('debug')('app:db');
 const express = require('express');
 const Joi = require('joi');
-const logger = require('./middleware')
-const Auth = require('./AuthMid');
+const logger = require('./middleware/logger.middleware')
+const Auth = require('./middleware/Auth.middleware');
 const app = express();
 const morgan = require('morgan');
 
