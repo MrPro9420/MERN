@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGO_DB_URL)
     .then(() => {
         console.log("Conncetd to DB")
-        console.log(mongoose.connection.name)
+        // console.log(mongoose.connection.name)
     })
     .catch(err => { console.error(err) });
 
@@ -14,9 +14,21 @@ mongoose.connect(process.env.MONGO_DB_URL)
 const courseSchema = new mongoose.Schema(
     {
         _id: String,
-        name: String,
+        name: { type: String, required: true, minlength: 5, maxlength: 100 },
+        category: {
+            type: String,
+            enum: ['mobile', 'web', 'network']
+        },
         author: String,
-        tags: [String],
+        tags: {
+            type: [String],
+            validate: {
+                validator: function (v) {
+                    return v && v.length > 0;
+                },
+                message: "Should have at least one tag"
+            }
+        },
         date: { type: Date, default: Date.now },
         price: Number,
         isPublished: Boolean
@@ -30,18 +42,26 @@ const Course = mongoose.model('Course', courseSchema);
 
 async function createCourse() {
     const course = new Course({
-        name: "MongoDB Course",
+        _id: 205,
+        name: "MongoDB Course2",
+        category: 'web',
         author: "None",
         price: 11000,
-        tags: ['backend', 'database'],
+        tags: [],
         isPublished: true
     });
 
-    const result = await course.save();
-    console.log(result)
+    try {
+        const result = await course.save();
+        console.log(result)
+    } catch (err) {
+        console.log(err.message)
+    }
+
+
 }
 
-// createCourse();
+createCourse();
 
 async function getAllCourse() {
     // const course = await Course.find({ price: { $gt: 11000, $lte: 20000 } }).limit(10).select({ name: 1, author: 1, _id: 0 });
@@ -96,10 +116,10 @@ async function updateCourseById(id) {
 
 async function removeCourseById(id) {
 
-    const result = await Course.deleteOne({ _id: id })
+    const result = await Course.deleteMany({ _id: { $type: "string", $regex: /^.{3}$/ } })
     console.log(result)
 }
-removeCourseById("5a68fdc3615eda645bc6bdec")
+// removeCourseById("5a68fdc3615eda645bc6bdec")
 
 
 
