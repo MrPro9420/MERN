@@ -3,6 +3,9 @@ const debug = require('./debugger');
 const genres = require('./routes/genres.route')
 const home = require('./routes/home.route')
 const morgan = require('morgan');
+const customer = require('./routes/customer.route')
+require('./connectDb');
+require('dotenv').config();
 
 
 const app = express();
@@ -17,6 +20,8 @@ if (app.get('env') === 'development') {
 
 app.use('/', home);
 app.use('/api/genres', genres)
+app.use('/api/customer', customer)
+
 
 
 

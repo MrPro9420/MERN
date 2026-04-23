@@ -5,11 +5,6 @@ const debug = require('../debugger');
 require('dotenv').config();
 const mongoose = require('mongoose');
 
-mongoose.connect(process.env.MONGO_DB_URL).then(() => {
-    console.log("Connected to db")
-}).catch((err) => {
-    console.log(err.message)
-})
 
 const genreSchema = new mongoose.Schema({
     name: {
